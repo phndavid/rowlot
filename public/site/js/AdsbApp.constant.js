@@ -11,13 +11,10 @@
 
     angular.module('AdsbApp')
 	       .constant('BaseUri', {
-	  	        protocol: 'http',
-	  	        host: 'dse1.1200.aero:8080',
-	  	        path: '/api/v1.0/',
-	  	        get url() {
-	  	            return this.protocol + '://' + this.host + this.path; }
-           })
-		   .constant("Config", {
-
-		   })
+	  	        apiKey: "AIzaSyAPsDLUl-siK8xadixI8emwb0N08JEhzpY",
+		        authDomain: "rowlot-c9891.firebaseapp.com",
+		        databaseURL: "https://rowlot-c9891.firebaseio.com",
+		        storageBucket: "rowlot-c9891.appspot.com",
+		        messagingSenderId: "844762296892"
+           })		   
 })();

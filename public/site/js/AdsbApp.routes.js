@@ -52,11 +52,11 @@
                 page_title: "Rowlot - Dashboard",
                 url: "/dashboard",
                 templateUrl: "views/rowlot/dashboard.html",                                     
-                controller: "LiveTrafficController"
+                controller: "RowlotController"
             })
             .state("auth.rowlot-listtask", {
                 page_title: "Rowlot - Dashboard",
-                url: "/dashboard",
+                url: "/task",
                 templateUrl: "views/rowlot/listtask.html",                                     
                 controller: "LiveTrafficController"
             })

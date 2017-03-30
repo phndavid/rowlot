@@ -12,6 +12,7 @@
     angular.module("AdsbApp",
         ["ngTouch",
          "toastr",
+         "firebase",
          "ui.router",
          "ngCookies",
          "ngAnimate",

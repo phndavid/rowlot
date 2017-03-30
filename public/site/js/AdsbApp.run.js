@@ -8,7 +8,8 @@
 
 (function () {
     'use strict';
-
+    
+    
     angular.module('AdsbApp')
            .run(runBlock);
 
@@ -26,7 +27,7 @@
             $("html, body").animate({ scrollTop: 0 }, 200);
         });
 
-       /* $rootScope.$on("$stateChangeStart", function (e, toState, toParams, fromState, fromParams) {
+       $rootScope.$on("$stateChangeStart", function (e, toState, toParams, fromState, fromParams) {
             // Se adiciona la lógica para comprobar que puedo mostrar si no estoy logueado
             var user = CurrentUserService.profile;
 
@@ -39,10 +40,10 @@
                 e.preventDefault();
                 LoginRedirectService.redirectPostLogin();
             }
-        })*/
+        })
 
         // Mostrar por defecto el menú lateral colapsado
         $cookieStore.put('sideNavCollapsed', false);
-        $rootScope.sideMenuAct = true;
+        $rootScope.sideMenuAct = true;       
     };
 })();

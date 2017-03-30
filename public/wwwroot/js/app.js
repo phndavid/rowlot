@@ -12,6 +12,7 @@
     angular.module("AdsbApp",
         ["ngTouch",
          "toastr",
+         "firebase",
          "ui.router",
          "ngCookies",
          "ngAnimate",
@@ -135,11 +136,11 @@
                 page_title: "Rowlot - Dashboard",
                 url: "/dashboard",
                 templateUrl: "views/rowlot/dashboard.html",                                     
-                controller: "LiveTrafficController"
+                controller: "RowlotController"
             })
             .state("auth.rowlot-listtask", {
                 page_title: "Rowlot - Dashboard",
-                url: "/dashboard",
+                url: "/task",
                 templateUrl: "views/rowlot/listtask.html",                                     
                 controller: "LiveTrafficController"
             })
@@ -157,7 +158,8 @@
 
 (function () {
     'use strict';
-
+    
+    
     angular.module('AdsbApp')
            .run(runBlock);
 
@@ -175,7 +177,7 @@
             $("html, body").animate({ scrollTop: 0 }, 200);
         });
 
-       /* $rootScope.$on("$stateChangeStart", function (e, toState, toParams, fromState, fromParams) {
+       $rootScope.$on("$stateChangeStart", function (e, toState, toParams, fromState, fromParams) {
             // Se adiciona la lógica para comprobar que puedo mostrar si no estoy logueado
             var user = CurrentUserService.profile;
 
@@ -188,316 +190,128 @@
                 e.preventDefault();
                 LoginRedirectService.redirectPostLogin();
             }
-        })*/
+        })
 
         // Mostrar por defecto el menú lateral colapsado
         $cookieStore.put('sideNavCollapsed', false);
-        $rootScope.sideMenuAct = true;
+        $rootScope.sideMenuAct = true;       
     };
 })();
 /**
- * Controller for draw in GoogleMapApi
- *
- * @author Nelson D. Padilla and David E. Morales
- * @since 17-dic-2016
+ * Controller de la página de autenticación (Login)
+ * 
+ * @author demorales13@gmail.com
+ * @since 3-dic-2016
  *
  */
 
 (function () {
-  "use strict";
+    "use strict";
 
-  angular.module("AdsbApp")
-    .controller("AircraftController", AircraftController);
+    angular.module("AdsbApp")
+           .controller("LoginController", LoginController);
 
-  AircraftController.$inject = ['$scope', '$timeout', 'uiGmapGoogleMapApi', 'AircraftService', 'GoogleMapService', "toastr"];
+    LoginController.$inject = ["$scope", "$rootScope",  "LoginService", "CurrentUserService", "LoginRedirectService", "toastr"];
 
-  function AircraftController($scope, $timeout, GoogleMapApi, AircraftService, GoogleMapService, toastr) {
-    const FLAGS_INTERVAL = 10;
-    $scope.map = {
-      center: { latitude: 34.976070404052734, longitude: -78.08470916748047 },
-      zoom: 8,
-      control: {
-      },
-      polilyneEvents: {
-        mouseover: function (polilyne, eventName, model) {
-          console.log("Polilyne was clicked", angular.toJson(model.path));
-          $scope.map.polilyneAlert.model = model.path[0];
-          $scope.map.polilyneAlert.show = true;
+    function LoginController($scope, $rootScope,  LoginService, CurrentUserService, LoginRedirectService, toastr) {
+
+        $scope.credentials = {
+            username: "dev@gmail.com",
+            password: "password"
         }
-      },
-      markersEvents: {
-        click: function (marker, eventName, model) {
-          $scope.map.window.model = model;
-          $scope.map.window.alert = model.alert;
-          $scope.map.window.show = true;
+
+        // Instancia del usuario actual
+        $scope.user = CurrentUserService.profile;
+
+        // Inicio de sesión
+        $scope.login = function (form) {
+            if (form.$valid) {
+                LoginService.login($scope.credentials)
+                             .then(function (response) {
+
+                                 LoginRedirectService.redirectPostLogin();
+                                 
+                             }, function (error) {
+
+                                 toastr.error("No se pudo ejecutar la operación");
+                                 console.log(error);
+
+                             });
+
+                $scope.credentials.password = "";
+                form.$setUntouched();
+            }
         }
-      },
-      window: {
-        marker: {},
-        show: false,
-        closeClick: function () {
-          this.show = false;
-        },
-        options: {
-          pixelOffset: { width: 0, height: -60 }
-        },
-        alert: {}
-      },
-      polilyneAlert: {
-        marker: {},
-        show: false,
-        closeClick: function () {
-          this.show = false;
-        },
-        options: {
-          pixelOffset: { width: 0, height: -60 }
-        },
-        alert: {}
-      },
-      options: {
-        boxClass: "infobox",
-        boxStyle: {
-          backgroundColor: "#f9f9f9",
-          border: "2px solid d9d9d9"
-        },
-        mapTypeId: 'faaSectionalChart',
-        mapTypeControlOptions: {
-          mapTypeIds: ['faaSectionalChart', 'ifrEnrouteLow', 'openStreet', google.maps.MapTypeId.ROADMAP],
+
+        // Cierre de sesión - Se eliminan datos del usuario y se redirecciona a la página de login
+        $scope.logout = function () {
+            LoginService.logout();
+            LoginRedirectService.redirectPostLogout();
         }
-      },
-      faaSectionalChartMapType: {
-        getTileUrl: function (coord, zoom) {
-          return "http://wms.chartbundle.com/tms/1.0.0/sec/" + zoom + "/" + coord.x + "/" + coord.y + ".png?origin=nw";
-        },
-        tileSize: new google.maps.Size(256, 256),
-        name: 'Sectional',
-        maxZoom: 19,
-      },
-      ifrEnrouteLowMapType: {
-        getTileUrl: function (coord, zoom) {
-          return "http://wms.chartbundle.com/tms/1.0.0/enrl/" + zoom + "/" + coord.x + "/" + coord.y + ".png?origin=nw";
-        },
-        tileSize: new google.maps.Size(256, 256),
-        name: 'IFR',
-        maxZoom: 19,
-      },
-      openStreetMapType: {
-        getTileUrl: function (coord, zoom) {
-          return "http://tile.openstreetmap.org/" + zoom + "/" + coord.x + "/" + coord.y + ".png";;
-        },
-        tileSize: new google.maps.Size(256, 256),
-        name: 'OSM',
-        maxZoom: 18,
-      }
+    }
+
+}());
+/**
+ * Servicio para el manejo de la lógica de negocio del módulo de autenticación
+ * 
+ * @author demorales13@gmail.com
+ * @since 3-dic-2016
+ *
+ */
+
+(function () {
+    'use strict';
+
+    angular.module("AdsbApp")
+           .service("LoginService", LoginService);
+
+    LoginService.$inject = ['RestService', 'CurrentUserService', '$q', "$firebaseAuth"];
+
+    function LoginService(RestService, CurrentUserService, $q, $firebaseAuth) {
+
+        // Servicio de inicio de sesión        
+        var login = function (credentials) {
+
+            var defered = $q.defer();
+            var promise = defered.promise;
+
+            const auth = firebase.auth();
+
+            //Sign In
+            auth.signInWithEmailAndPassword(credentials.username, credentials.password).catch(function (error) {
+                // Handle Errors here.
+                const errorCode = error.code;
+                const errorMessage = error.message;                
+                // ...
+            });
+            
+            // Add a realtime listener
+            firebase.auth().onAuthStateChanged(function(user) {
+                if(user) {
+                    console.log("Logged in as:",user);
+                    CurrentUserService.setProfile(credentials.username, user.uid);
+                    defered.resolve();                     
+                }else{
+                    console.error("Authentication failed:", error);
+                    defered.reject("Usuario no existe...")    
+                }
+            });
+            return promise;
+        }
+
+        // Servicio de fin de sesión
+        var logout = function () {
+            // Elimina el perfil almacenado
+            CurrentUserService.removeProfile();
+        }
+
+        return {
+            login: login,
+            logout: logout
+        };
     };
 
-    $scope.polylines = [];
-    $scope.gndspd_markers = [];
-    $scope.vspd_markers = [];
-    $scope.emerg_markers = [];
-    $scope.sqwk_markers = [];
-    var flight = [];
-
-    $scope.spd_check = false;
-    $scope.speedFilter = function () {
-
-      if ($scope.spd_check == false) {
-        $scope.spd_check = true;
-        $scope.gndspd_markers = GoogleMapService.drawMarkers("gndspd", [], 0);
-        return;
-      }
-
-      $scope.spd_check = false;
-      var gndspd_markers = [];
-      for (var i = 0; i < flight.length; i++) {
-        var path = flight[i];
-        if (path.gndspd != null && path.gndspd <= 150) {
-          var newPath = findPathNext(flight, i);
-          if (newPath != null && newPath.latitude != null && newPath.longitude != null) {
-            newPath.alert = { title: "Ground speed", body: path.gndspd + " kts" };
-            gndspd_markers.push(newPath);
-          }
-        }
-      }
-      $scope.gndspd_markers = GoogleMapService.drawMarkers("gndspd", gndspd_markers, FLAGS_INTERVAL);
-
-    }
-
-    $scope.vspd_check = false;
-    $scope.vspdFilter = function () {
-
-      if ($scope.vspd_check == false) {
-        $scope.vspd_check = true;
-        $scope.vspd_markers = GoogleMapService.drawMarkers("vspd", [], 0);
-        return;
-      }
-
-      $scope.vspd_check = false;
-      var vspd_markers = [];
-      for (var i = 0; i < flight.length; i++) {
-        var path = flight[i];
-        if (path.vspd != null && (path.vspd > 3000 || path.vspd < -3000)) {
-          var newPath = findPathNext(flight, i);
-          if (newPath != null && newPath.latitude != null && newPath.longitude != null) {
-            newPath.alert = { title: "Vspd", body: path.vspd + " ft/min" };
-            vspd_markers.push(newPath);
-          }
-        }
-      }
-      $scope.vspd_markers = GoogleMapService.drawMarkers("vspd", vspd_markers, FLAGS_INTERVAL);
-
-    }
-
-    $scope.emerg_check = false;
-    $scope.emergFilter = function () {
-
-      if ($scope.emerg_check == false) {
-        $scope.emerg_check = true;
-        $scope.emerg_markers = GoogleMapService.drawMarkers("emerg", [], 0);
-        return;
-      }
-
-      $scope.emerg_check = false;
-      var emerg_markers = [];
-      for (var i = 0; i < flight.length; i++) {
-        var path = flight[i];
-        if (path.emerg != null && path.emerg) {
-          var newPath = findPathNext(flight, i);
-          if (newPath != null && newPath.latitude != null && newPath.longitude != null) {
-            newPath.alert = { title: "Emergency", body: path.emerg };
-            emerg_markers.push(newPath);
-          }
-        }
-      }
-      $scope.emerg_markers = GoogleMapService.drawMarkers("emerg", emerg_markers, FLAGS_INTERVAL);
-    }
-
-    $scope.sqwk_check = false;
-    $scope.sqwkFilter = function () {
-
-      if ($scope.sqwk_check == false) {
-        $scope.sqwk_check = true;
-        $scope.sqwk_markers = GoogleMapService.drawMarkers("sqwk", [], 0);
-        return;
-      }
-
-      $scope.sqwk_check = false;
-
-      var sqwk_markers = [];
-      for (var i = 0; i < flight.length; i++) {
-        var path = flight[i];
-        if (path.sqwk != null) {
-          var newPath = findPathNext(flight, i);
-          if (newPath != null && newPath.latitude != null && newPath.longitude != null) {
-            newPath.alert = { title: "Squawk", body: path.sqwk };
-            sqwk_markers.push(newPath);
-          }
-        }
-      }
-      $scope.sqwk_markers = GoogleMapService.drawMarkers("sqwk", sqwk_markers, FLAGS_INTERVAL);
-    }
-
-    $scope.getHistory = function (icao, date) {
-      $scope.history = [];
-      AircraftService.getHistory(icao, date).then(function (response) {
-
-        $scope.history = response;
-        console.log("history", $scope.history);
-
-      }, function (error) {
-        toastr.error("The requested action (get history) could not be performed. Try again.");
-        console.log(error);
-      });
-    }
-
-    $scope.drawAircraftByIcao = function (icao, date, index) {
-      clearAll();
-      AircraftService.getHistoryFlight(icao, date, index).then(function (response) {
-
-        flight = response;
-        $scope.polylines = GoogleMapService.drawPath(response);
-        GoogleMapService.fitMap($scope.map.control.getGMap(), $scope.polylines);
-        initFilters();
-
-      }, function (error) {
-        toastr.error("The requested action (get history flight) could not be performed. Try again.");
-        console.log(error);
-      });
-    }
-
-    $scope.findAircraftByRegn = function () {
-      console.log("REGN", $scope.regn);
-      var regn = $scope.regn;
-
-      if (regn == null || regn == undefined || regn == "") {
-        toastr.error("Enter a valid data");
-        return;
-      }
-
-      // Borra los datos dibujados previamente
-      $scope.tail_history = [];
-      $scope.polylines = [];
-      clearAll();
-
-      AircraftService.getTailHistory(regn.toUpperCase()).then(function (response) {
-        $scope.tail_history = response;
-        console.log("tail", $scope.tail_history);
-      }, function (error) {
-        toastr.error("The requested action (get tail history flight) could not be performed. Try again.");
-        console.log(error);
-      });
-    }
-
-    var clearAll = function () {
-      changeCheck(false);
-      $scope.gndspd_markers = GoogleMapService.drawMarkers("gndspd", [], 0);
-      $scope.vspd_markers = GoogleMapService.drawMarkers("vspd", [], 0);
-      $scope.emerg_markers = GoogleMapService.drawMarkers("emerg", [], 0);
-      $scope.sqwk_markers = GoogleMapService.drawMarkers("sqwk", [], 0);
-    }
-
-    var initFilters = function () {
-      changeCheck(true);
-      $scope.speedFilter();
-      $scope.vspdFilter();
-      $scope.emergFilter();
-      $scope.sqwkFilter();
-      changeCheck(true);
-    }
-
-    var changeCheck = function (state) {
-      $scope.spd_check = state;
-      $scope.vspd_check = state;
-      $scope.emerg_check = state;
-      $scope.sqwk_check = state;
-    }
-
-    var findPathNext = function (array, x) {
-      for (var i = x; i < array.length; i++) {
-        var path = array[i];
-        if (path.latitude != null && path.longitude != null)
-          return array[i];
-      }
-      return null;
-    }
-
-    $scope.dateFormat = function (date) {
-      return moment(date).utc().format("hh:mm:ss a");   
-    }
-
-    var inicialize = function () {
-      return AircraftService.getAircrafts('sdelosrios95@gmail.com', 'password')
-        .then(function (response) {
-          $scope.aircrafts = response;
-        }, function (error) {
-          toastr.error("Error execute aircrafts");
-          console.log(error);
-        });
-    } ();
-
-  }
-} ());
-
+})();
 /**
  * Servicio para el manejo de la lógica de negocio del módulo de aviones
  *
@@ -591,114 +405,58 @@
 } ());
 
 /**
- * Controller de la página de autenticación (Login)
- * 
- * @author demorales13@gmail.com
- * @since 3-dic-2016
+ * Controller for draw in GoogleMapApi
+ *
+ * @author Nelson D. Padilla and David E. Morales
+ * @since 17-dic-2016
  *
  */
 
 (function () {
-    "use strict";
+  "use strict";
 
-    angular.module("AdsbApp")
-           .controller("LoginController", LoginController);
+  angular.module("AdsbApp")
+    .controller("RowlotController", RowlotController);
 
-    LoginController.$inject = ["$scope", "$rootScope", "LoginService", "CurrentUserService", "LoginRedirectService", "toastr"];
+  RowlotController.$inject = ['$scope', '$timeout', 'AircraftService',"CurrentUserService","toastr"];
 
-    function LoginController($scope, $rootScope, LoginService, CurrentUserService, LoginRedirectService, toastr) {
-
-        $scope.credentials = {
-            username: "usuario",
-            password: "P4$$w0rd"
-        }
-
-        // Instancia del usuario actual
-        $scope.user = CurrentUserService.profile;
-
-        // Inicio de sesión
-        $scope.login = function (form) {
-            if (form.$valid) {
-                LoginService.login($scope.credentials)
-                             .then(function (response) {
-
-                                 LoginRedirectService.redirectPostLogin();
-                                 
-                             }, function (error) {
-
-                                 toastr.error("No se pudo ejecutar la operación");
-                                 console.log(error);
-
-                             });
-
-                $scope.credentials.password = "";
-                form.$setUntouched();
-            }
-        }
-
-        // Cierre de sesión - Se eliminan datos del usuario y se redirecciona a la página de login
-        $scope.logout = function () {
-            LoginService.logout();
-            LoginRedirectService.redirectPostLogout();
-        }
+  function RowlotController($scope, $timeout,  AircraftService, CurrentUserService, toastr) {    
+    $scope.profile={
+      email: 'default@rowlot.com',
+      username: 'rowlot',
     }
+    var inicialize = function () {
+      console.log(CurrentUserService.profile);
+      //acceso al servicio bd
+      let database = firebase.database();
+      //Mi nodo de Usuarios
+      let ref = database.ref('Usuarios');
+      ref.on('value', function (ss) {
+          //let nombre = ss.val();
 
-}());
-/**
- * Servicio para el manejo de la lógica de negocio del módulo de autenticación
- * 
- * @author demorales13@gmail.com
- * @since 3-dic-2016
- *
- */
+          let nombres = ss.val();
+          
+          //tengo las keys de los usuarios en un array
+          let keys = Object.keys(nombres);
+         
+          for (let i = 0; i < keys.length; i++){
+              let k = keys [i];
+              // Saco el nombre
+              let nombre = nombres[k].Nombre;
+              // Saco el apellido
+              let apellido = nombres[k].Apellido;
+              // console.log(nombre, apellido);
 
-(function () {
-    'use strict';
+              
 
-    angular.module("AdsbApp")
-           .service("LoginService", LoginService);
+          }
 
-    LoginService.$inject = ['RestService', 'CurrentUserService', '$q'];
+      });
+    } ();
 
-    function LoginService(RestService, CurrentUserService, $q) {
+  }
+} ());
 
-        // Servicio de inicio de sesión        
-        var login = function (credentials) {
-
-            //// Llama el servicio de autenticación
-            //return RestService.login("api/login", credentials)
-            //                  .then(function (response) {
-            //                      CurrentUserService.setProfile(credentials.username, response.data.access_token);
-            //                  });
-
-
-
-            var defered = $q.defer();
-            var promise = defered.promise;
-
-            if (credentials.username === "usuario" && credentials.password === "P4$$w0rd") {
-                CurrentUserService.setProfile(credentials.username, "AbCdEf123456");
-                defered.resolve();
-            } else {
-                defered.reject("Usuario no existe...")
-            }
-
-            return promise;
-        }
-
-        // Servicio de fin de sesión
-        var logout = function () {
-            // Elimina el perfil almacenado
-            CurrentUserService.removeProfile();
-        }
-
-        return {
-            login: login,
-            logout: logout
-        };
-    };
-
-})();
 /**
  * Servicio para el manejo del token de seguridad en las peticiones http
  * 
@@ -858,6 +616,106 @@
 (function () {
     "use strict";
 
+    angular.module("AdsbApp")
+           .controller("SideMenuController", SideMenuController);
+
+
+    SideMenuController.$inject = ["$rootScope", "$scope", "$state", "$stateParams", "$timeout"];
+
+    function SideMenuController($rootScope, $scope, $state, $stateParams, $timeout) {
+
+        $scope.sections = [
+             {
+                id: 0,
+                title: "Dashboard",
+                icon: "mdi mdi-table fa-fw",                
+                link: "auth.rowlot-dasboarh"
+            },
+            {
+                id: 1,
+                title: "Ranking",
+                icon: "mdi mdi-table fa-fw",
+                link: "auth.rowlow-listtask"
+            },
+            {
+                id: 2,
+                title: "Tareas",
+                icon: "mdi mdi-table fa-fw",                
+                submenu: [
+                    {
+                        title: "KRDU",
+                        link: "auth.aircraft-livetraffic-01"
+                    },
+                    {
+                        title: "KLZU",
+                        link: "auth.aircraft-livetraffic-02"
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "NMACs",
+                icon: "fa fa-paper-plane-o first_level_icon",
+                link: "auth.aircraft-nmacs"
+            },
+           
+        ];
+
+        // accordion menu
+        $(document).off("click", ".side_menu_expanded #main_menu .has_submenu > a").on("click", ".side_menu_expanded #main_menu .has_submenu > a", function () {
+            if ($(this).parent(".has_submenu").hasClass("first_level")) {
+                var $this_parent = $(this).parent(".has_submenu"),
+                    panel_active = $this_parent.hasClass("section_active");
+
+                if (!panel_active) {
+                    $this_parent.siblings().removeClass("section_active").children("ul").slideUp("200");
+                    $this_parent.addClass("section_active").children("ul").slideDown("200");
+                } else {
+                    $this_parent.removeClass("section_active").children("ul").slideUp("200");
+                }
+            } else {
+                var $submenu_parent = $(this).parent(".has_submenu"),
+                    submenu_active = $submenu_parent.hasClass("submenu_active");
+
+                if (!submenu_active) {
+                    $submenu_parent.siblings().removeClass("submenu_active").children("ul").slideUp("200");
+                    $submenu_parent.addClass("submenu_active").children("ul").slideDown("200");
+                } else {
+                    $submenu_parent.removeClass("submenu_active").children("ul").slideUp("200");
+                }
+            }
+        });
+
+        $rootScope.createScrollbar = function () {
+            $("#main_menu .menu_wrapper").mCustomScrollbar({
+                theme: "minimal-dark",
+                scrollbarPosition: "outside"
+            });
+        };
+
+        $rootScope.destroyScrollbar = function () {
+            $("#main_menu .menu_wrapper").mCustomScrollbar("destroy");
+        };
+
+        $timeout(function () {
+            if (!$rootScope.sideNavCollapsed && !$rootScope.topMenuAct) {
+                if (!$("#main_menu .has_submenu").hasClass("section_active")) {
+                    $("#main_menu .has_submenu .act_nav").closest(".has_submenu").children("a").click();
+                } else {
+                    $("#main_menu .has_submenu.section_active").children("ul").show();
+                }
+                // init scrollbar
+                $rootScope.createScrollbar();
+            }
+        });
+
+
+    }
+})();
+
+(function () {
+    "use strict";
+
     angular
       .module("AdsbApp")
     /* Directives */
@@ -1007,106 +865,6 @@
 
 
 })();
-(function () {
-    "use strict";
-
-    angular.module("AdsbApp")
-           .controller("SideMenuController", SideMenuController);
-
-
-    SideMenuController.$inject = ["$rootScope", "$scope", "$state", "$stateParams", "$timeout"];
-
-    function SideMenuController($rootScope, $scope, $state, $stateParams, $timeout) {
-
-        $scope.sections = [
-             {
-                id: 0,
-                title: "Dashboard",
-                icon: "mdi mdi-table fa-fw",                
-                link: "auth.rowlot-dasboarh"
-            },
-            {
-                id: 1,
-                title: "Ranking",
-                icon: "mdi mdi-table fa-fw",
-                link: "auth.rowlow-listtask"
-            },
-            {
-                id: 2,
-                title: "Tareas",
-                icon: "mdi mdi-table fa-fw",                
-                submenu: [
-                    {
-                        title: "KRDU",
-                        link: "auth.aircraft-livetraffic-01"
-                    },
-                    {
-                        title: "KLZU",
-                        link: "auth.aircraft-livetraffic-02"
-                    }
-                ]
-            },
-            {
-                id: 3,
-                title: "NMACs",
-                icon: "fa fa-paper-plane-o first_level_icon",
-                link: "auth.aircraft-nmacs"
-            },
-           
-        ];
-
-        // accordion menu
-        $(document).off("click", ".side_menu_expanded #main_menu .has_submenu > a").on("click", ".side_menu_expanded #main_menu .has_submenu > a", function () {
-            if ($(this).parent(".has_submenu").hasClass("first_level")) {
-                var $this_parent = $(this).parent(".has_submenu"),
-                    panel_active = $this_parent.hasClass("section_active");
-
-                if (!panel_active) {
-                    $this_parent.siblings().removeClass("section_active").children("ul").slideUp("200");
-                    $this_parent.addClass("section_active").children("ul").slideDown("200");
-                } else {
-                    $this_parent.removeClass("section_active").children("ul").slideUp("200");
-                }
-            } else {
-                var $submenu_parent = $(this).parent(".has_submenu"),
-                    submenu_active = $submenu_parent.hasClass("submenu_active");
-
-                if (!submenu_active) {
-                    $submenu_parent.siblings().removeClass("submenu_active").children("ul").slideUp("200");
-                    $submenu_parent.addClass("submenu_active").children("ul").slideDown("200");
-                } else {
-                    $submenu_parent.removeClass("submenu_active").children("ul").slideUp("200");
-                }
-            }
-        });
-
-        $rootScope.createScrollbar = function () {
-            $("#main_menu .menu_wrapper").mCustomScrollbar({
-                theme: "minimal-dark",
-                scrollbarPosition: "outside"
-            });
-        };
-
-        $rootScope.destroyScrollbar = function () {
-            $("#main_menu .menu_wrapper").mCustomScrollbar("destroy");
-        };
-
-        $timeout(function () {
-            if (!$rootScope.sideNavCollapsed && !$rootScope.topMenuAct) {
-                if (!$("#main_menu .has_submenu").hasClass("section_active")) {
-                    $("#main_menu .has_submenu .act_nav").closest(".has_submenu").children("a").click();
-                } else {
-                    $("#main_menu .has_submenu.section_active").children("ul").show();
-                }
-                // init scrollbar
-                $rootScope.createScrollbar();
-            }
-        });
-
-
-    }
-})();
-
 /**
  * Servicio para el manejo de las ventanas de dialogo
  * 

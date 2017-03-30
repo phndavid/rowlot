@@ -33,8 +33,7 @@
     <div ui-view autoscroll="false" class="mainView-animate"></div> 
     <div id="loading-bar-spinner-container"></div>
 
-    <!--FireBASE-->
-    <script src="https://www.gstatic.com/firebasejs/3.7.1/firebase.js"></script>
+   
     <script src="js/vendor/lodash.js"></script>
     <script src="js/vendor/jquery.js"></script>
     
@@ -70,13 +69,24 @@
     <script src="js/vendor/jquery.shuffle.modernizr.js"></script>
     <script src="js/vendor/v-accordion.js"></script>
     <script src="js/vendor/loading-bar.js"></script>    
-
-
+    <!--script type="text/javascript" src="js/vendor/firebase.js"></script-->
+   <!-- Firebase -->
+     // TODO: Replace with your project's customized code snippet
+  <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyAPsDLUl-siK8xadixI8emwb0N08JEhzpY",
+        authDomain: "rowlot-c9891.firebaseapp.com",
+        databaseURL: "https://rowlot-c9891.firebaseio.com",
+        storageBucket: "rowlot-c9891.appspot.com",
+        messagingSenderId: "844762296892"
+    };
+    firebase.initializeApp(config);
+  </script>
+    <script type="text/javascript" src="js/vendor/angularfire.min.js"></script>
+    
     <script src="js/app.js"></script>
-    <script src="js/configuration.js"></script>
-
-    <script type="text/javascript" 
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrjU-VTXQ2LGGBERUI15vV_iwDN6Lp5n8">
-        </script>
+    <script src="js/configuration.js"></script> 
 </body>
 </html>

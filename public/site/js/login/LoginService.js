@@ -12,31 +12,37 @@
     angular.module("AdsbApp")
            .service("LoginService", LoginService);
 
-    LoginService.$inject = ['RestService', 'CurrentUserService', '$q'];
+    LoginService.$inject = ['RestService', 'CurrentUserService', '$q', "$firebaseAuth"];
 
-    function LoginService(RestService, CurrentUserService, $q) {
+    function LoginService(RestService, CurrentUserService, $q, $firebaseAuth) {
 
         // Servicio de inicio de sesión        
         var login = function (credentials) {
 
-            //// Llama el servicio de autenticación
-            //return RestService.login("api/login", credentials)
-            //                  .then(function (response) {
-            //                      CurrentUserService.setProfile(credentials.username, response.data.access_token);
-            //                  });
-
-
-
             var defered = $q.defer();
             var promise = defered.promise;
 
-            if (credentials.username === "usuario" && credentials.password === "P4$$w0rd") {
-                CurrentUserService.setProfile(credentials.username, "AbCdEf123456");
-                defered.resolve();
-            } else {
-                defered.reject("Usuario no existe...")
-            }
+            const auth = firebase.auth();
 
+            //Sign In
+            auth.signInWithEmailAndPassword(credentials.username, credentials.password).catch(function (error) {
+                // Handle Errors here.
+                const errorCode = error.code;
+                const errorMessage = error.message;                
+                // ...
+            });
+            
+            // Add a realtime listener
+            firebase.auth().onAuthStateChanged(function(user) {
+                if(user) {
+                    console.log("Logged in as:",user);
+                    CurrentUserService.setProfile(credentials.username, user.uid);
+                    defered.resolve();                     
+                }else{
+                    console.error("Authentication failed:", error);
+                    defered.reject("Usuario no existe...")    
+                }
+            });
             return promise;
         }
 

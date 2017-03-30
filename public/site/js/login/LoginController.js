@@ -12,13 +12,13 @@
     angular.module("AdsbApp")
            .controller("LoginController", LoginController);
 
-    LoginController.$inject = ["$scope", "$rootScope", "LoginService", "CurrentUserService", "LoginRedirectService", "toastr"];
+    LoginController.$inject = ["$scope", "$rootScope",  "LoginService", "CurrentUserService", "LoginRedirectService", "toastr"];
 
-    function LoginController($scope, $rootScope, LoginService, CurrentUserService, LoginRedirectService, toastr) {
+    function LoginController($scope, $rootScope,  LoginService, CurrentUserService, LoginRedirectService, toastr) {
 
         $scope.credentials = {
-            username: "usuario",
-            password: "P4$$w0rd"
+            username: "dev@gmail.com",
+            password: "password"
         }
 
         // Instancia del usuario actual
