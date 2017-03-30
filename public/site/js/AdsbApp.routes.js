@@ -48,7 +48,7 @@
                 templateUrl: "views/common/authenticated.html"
             })
 
-            .state("auth.rowlot-dashboard", {
+            .state("auth.rowlot", {
                 page_title: "Rowlot - Dashboard",
                 url: "/dashboard",
                 templateUrl: "views/rowlot/dashboard.html",                                     
