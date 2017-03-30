@@ -1,7 +1,7 @@
 ﻿/**
  * Controller for draw in GoogleMapApi
  *
- * @author Nelson D. Padilla and David E. Morales
+ * @author Nelson D. Padilla
  * @since 17-dic-2016
  *
  */
@@ -12,22 +12,32 @@
   angular.module("AdsbApp")
     .controller("RowlotController", RowlotController);
 
-  RowlotController.$inject = ['$scope', '$timeout', 'AircraftService',"CurrentUserService","toastr"];
+  RowlotController.$inject = ['$scope', '$timeout', 'RowlotService',"CurrentUserService","toastr"];
 
-  function RowlotController($scope, $timeout,  AircraftService, CurrentUserService, toastr) {    
-    var user = firebase.auth().currentUser;
-      $scope.profile={
-        email: "example.com",
-        username: "rowlot"
-      }
-      if (user != null) {
-      $scope.profile={
-        email: user.email,
-        username: user.Nombre+" "+user.Apellido,
-      }
-      console.log("User", user);
+  function RowlotController($scope, $timeout,  RowlotService, CurrentUserService, toastr) {    
+  
+    var loadCurrentUser = function(){
+      return RowlotService.getCurrentUser().then(function(response){
+        console.log("user",response)
+        $scope.profile = response;
+      }, function (error) {
+          toastr.error("Error al cargar usuario");
+          console.log(error);
+        });
     }
-    
- 
+    var loadUsers = function(){
+      return RowlotService.getUsers().then(function (response) {          
+          console.log("Users", response);
+          $scope.users = response;
+        }, function (error) {
+          toastr.error("Error al cargar usuarios");
+          console.log(error);
+        });     
+    }
+    var init = function(){
+      loadUsers();
+      loadCurrentUser();
+    }();
+   
   }
 } ());

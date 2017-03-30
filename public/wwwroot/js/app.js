@@ -313,101 +313,9 @@
 
 })();
 /**
- * Servicio para el manejo de la lógica de negocio del módulo de aviones
- *
- * @author Nelson D. Padilla and David E. Morales
- * @since 3-dic-2016
- *
- */
-
-(function () {
-    'use strict';
-
-    angular
-        .module('AdsbApp')
-        .service('AircraftService', AircraftService);
-
-    AircraftService.$inject = ['RestService'];
-
-    function AircraftService(RestService) {
-
-        var getHistory = function (icao, day) {
-            // history, {params: {icao:'+icao+',day:'+day+'}}'
-            return RestService.get('history?icao=' + icao + '&day=' + day)
-                .then(function (response) {
-                    return response.data.messages;
-                });
-        }
-        var getHistoryFlight = function (icao, date, index) {
-            // history, {params: {icao:'+icao+',day:'+day+'}}'
-            return RestService.get('history?icao=' + icao + '&day=' + date)
-                .then(function (response) {
-                    return response.data.messages.flights[index].data.map(function (item) {
-                        return {
-                            altitude: item.alt,
-                            latitude: item.lat,
-                            longitude: item.lon,
-                            gentime: item.gentime,
-                            msgtype: item.msgtype,
-                            gndspd: item.gndspd,
-                            emerg: item.emerg,
-                            sqwk: item.sqwk,
-                            vspd: item.vspd
-                        }
-                    });
-                });
-        }
-        var getTailHistory = function (regn) {
-            return RestService.get('tail_history?regn=' + regn)
-                .then(function (response) {
-                    return response.data;
-                });
-        }
-
-        var getAircrafts = function (email, pwd) {
-            return RestService.post('users/auth', 'email=' + email + '&pwd=' + pwd)
-                .then(function (response) {
-                    return response.data.aircraft;
-                });
-        }
-
-        return {
-            getHistory: getHistory,
-            getHistoryFlight: getHistoryFlight,
-            getTailHistory: getTailHistory,
-            getAircrafts: getAircrafts
-        }
-    }
-} ());
-
-/**
- * Controller for Live Traffic
- *
- * @author David E. Morales
- * @since 02-mar-2017
- *
- */
-
-(function () {
-  "use strict";
-
-  angular.module("AdsbApp")
-    .controller("LiveTrafficController", LiveTrafficController);
-
-  LiveTrafficController.$inject = ['$stateParams'];
-
-  function LiveTrafficController($stateParams) {
-
-    var station = $stateParams.station;
-    $("#siteloader").html('<object data="http://1200.aero/' + station + '"/>');
-
-  }
-} ());
-
-/**
  * Controller for draw in GoogleMapApi
  *
- * @author Nelson D. Padilla and David E. Morales
+ * @author Nelson D. Padilla
  * @since 17-dic-2016
  *
  */
@@ -418,23 +326,103 @@
   angular.module("AdsbApp")
     .controller("RowlotController", RowlotController);
 
-  RowlotController.$inject = ['$scope', '$timeout', 'AircraftService',"CurrentUserService","toastr"];
+  RowlotController.$inject = ['$scope', '$timeout', 'RowlotService',"CurrentUserService","toastr"];
 
-  function RowlotController($scope, $timeout,  AircraftService, CurrentUserService, toastr) {    
-    var user = firebase.auth().currentUser;
-      $scope.profile={
-        email: "example.com",
-        username: "rowlot"
-      }
-      if (user != null) {
-      $scope.profile={
-        email: user.email,
-        username: user.Nombre+" "+user.Apellido,
-      }
-      console.log("User", user);
+  function RowlotController($scope, $timeout,  RowlotService, CurrentUserService, toastr) {    
+  
+    var loadCurrentUser = function(){
+      return RowlotService.getCurrentUser().then(function(response){
+        console.log("user",response)
+        $scope.profile = response;
+      }, function (error) {
+          toastr.error("Error al cargar usuario");
+          console.log(error);
+        });
     }
- 
+    var loadUsers = function(){
+      return RowlotService.getUsers().then(function (response) {          
+          console.log("Users", response);
+          $scope.users = response;
+        }, function (error) {
+          toastr.error("Error al cargar usuarios");
+          console.log(error);
+        });     
+    }
+    var init = function(){
+      loadUsers();
+      loadCurrentUser();
+    }();
+   
   }
+} ());
+
+/**
+ * Servicio para el manejo de la lógica de negocio del módulo de aviones
+ *
+ * @author Nelson D. Padilla
+ * @since 3-dic-2016
+ *
+ */
+
+(function () {
+    'use strict';
+
+    angular
+        .module('AdsbApp')
+        .service('RowlotService', RowlotService);
+
+    RowlotService.$inject = ['RestService','$q'];
+
+    function RowlotService(RestService, $q) {
+
+        var getCurrentUser = function(){
+            var defered = $q.defer();
+            var promise = defered.promise;
+            let user = firebase.auth().currentUser;
+            console.log("currentUser",user);
+            if(user != null){            
+                firebase.database().ref('/Usuarios/' + user.uid).once('value').then(function(snapshot) {
+                  //var username = snapshot.val().username;
+                  console.log(snapshot.val());
+                  defered.resolve(snapshot.val());
+                  // ...
+                })            
+            }
+            return promise;
+        }
+        var getUsers = function () {
+            var defered = $q.defer();
+            var promise = defered.promise;
+            let users = [];
+            // history, {params: {icao:'+icao+',day:'+day+'}}'
+            //acceso al servicio bd
+            let database = firebase.database();
+            //Mi nodo de Usuarios
+            let ref = database.ref('Usuarios');
+                ref.on('value', function (ss) {
+                //let nombre = ss.val();
+                let nombres = ss.val();
+                console.log(nombres);
+                //tengo las keys de los usuarios en un array
+                let keys = Object.keys(nombres);      
+                for (let i = 0; i < keys.length; i++){
+                    let k = keys [i];
+                    //$scope.users = $scope.users.concat(nombres[k]);
+                    users.push(nombres[k]);
+                }                 
+                defered.resolve(users);
+            })
+
+            return promise;
+        }
+
+ 
+
+        return {
+            getUsers: getUsers,
+            getCurrentUser: getCurrentUser
+        }
+    }
 } ());
 
 /**
