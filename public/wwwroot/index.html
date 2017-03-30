@@ -24,10 +24,7 @@
 
 </head>
 <body class="{{siteBg}}"
-      ng-class="{'login_page': $state.is('login'),
-                 'side_menu_active' : sideMenuAct,
-                 'side_menu_collapsed' : sideNavCollapsed && sideMenuAct,
-                 'side_menu_expanded' :  !sideNavCollapsed && sideMenuAct}">
+      ng-class="{'login_page': $state.is('login')}">
 
 
     <div ui-view autoscroll="false" class="mainView-animate"></div> 

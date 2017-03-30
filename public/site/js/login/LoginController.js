@@ -45,9 +45,13 @@
         }
 
         // Cierre de sesión - Se eliminan datos del usuario y se redirecciona a la página de login
-        $scope.logout = function () {
-            LoginService.logout();
-            LoginRedirectService.redirectPostLogout();
+        $scope.logout = function () {            
+            firebase.auth().signOut().then(function() {
+                LoginService.logout();
+                LoginRedirectService.redirectPostLogout();
+            }, function(error) {
+              // An error happened.
+            });
         }
     }
 

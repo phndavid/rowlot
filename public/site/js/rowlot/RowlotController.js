@@ -34,6 +34,10 @@
           console.log(error);
         });     
     }
+    $scope.addCoins = function(userId){      
+      console.log("userId",userId);
+      RowlotService.updateCoins(userId);
+    }
     var init = function(){
       loadUsers();
       loadCurrentUser();

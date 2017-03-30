@@ -1,8 +1,8 @@
 ﻿/**
  * Servicio para el manejo de los redireccionamientos según el estado del token de autenticación del usuario
  * 
- * @author demorales13@gmail.com
- * @since 3-dic-2016
+ * @author Nelson David Padilla
+ * @since 31-Mar-2017
  *
  */
 

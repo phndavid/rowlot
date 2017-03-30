@@ -35,34 +35,38 @@
         var getUsers = function () {
             var defered = $q.defer();
             var promise = defered.promise;
-            let users = [];
-            // history, {params: {icao:'+icao+',day:'+day+'}}'
+            let users = [];            
             //acceso al servicio bd
             let database = firebase.database();
             //Mi nodo de Usuarios
             let ref = database.ref('Usuarios');
                 ref.on('value', function (ss) {
                 //let nombre = ss.val();
-                let nombres = ss.val();
-                console.log(nombres);
+                let nombres = ss.val();                
                 //tengo las keys de los usuarios en un array
                 let keys = Object.keys(nombres);      
                 for (let i = 0; i < keys.length; i++){
-                    let k = keys [i];
-                    //$scope.users = $scope.users.concat(nombres[k]);
-                    users.push(nombres[k]);
-                }                 
+                    let k = keys [i];                    
+                    users.push({"data": nombres[k], "uid": k});
+                }
+                console.log(users);
                 defered.resolve(users);
             })
 
             return promise;
         }
-
+        var updateCoins = function(userId){
+            var userRef = firebase.database().ref('/Usuarios/' + userId);
+            userRef.update({
+              Moneda: 1000
+            });
+        }
  
 
         return {
             getUsers: getUsers,
-            getCurrentUser: getCurrentUser
+            getCurrentUser: getCurrentUser,
+            updateCoins:updateCoins
         }
     }
 } ());

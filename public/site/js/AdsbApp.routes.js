@@ -1,7 +1,7 @@
 ﻿/**
  * Definición de enrutamientos
  *
- * @author demorales13@gmail.com
+ * @author Nelson David Padilla H.
  * @since 3-dic-2016
  *
  */
@@ -39,10 +39,7 @@
 
             // Authenticated
             .state("auth", {
-                abstract: true,
-                ncyBreadcrumb: {
-                    skip: true
-                },
+                abstract: true,              
                 // this state url
                 url: "",
                 templateUrl: "views/common/authenticated.html"

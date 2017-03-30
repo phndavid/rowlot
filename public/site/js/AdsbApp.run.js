@@ -31,7 +31,7 @@
             // Se adiciona la lógica para comprobar que puedo mostrar si no estoy logueado
             var user = CurrentUserService.profile;
 
-            if (!user.loggedIn && toState.name != "login") {
+            if (!user.loggedIn && toState.name != "login" ) {
                 e.preventDefault();
                 LoginRedirectService.redirectPostLogout();
             }
@@ -40,10 +40,6 @@
                 e.preventDefault();
                 LoginRedirectService.redirectPostLogin();
             }
-        })
-
-        // Mostrar por defecto el menú lateral colapsado
-        $cookieStore.put('sideNavCollapsed', false);
-        $rootScope.sideMenuAct = true;       
+        })            
     };
 })();

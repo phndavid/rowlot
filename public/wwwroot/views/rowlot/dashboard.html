@@ -77,7 +77,7 @@
                                         <th>Monedas</th>
                                         <th>Vidas</th>
                                         <th>Medallas</th>
-
+                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody ng-init="database()">
@@ -85,12 +85,12 @@
                                         <td>{{index+1}}</td>
                                         <td>
                                             <a href="contact-detail.html">
-                                                <img src="../plugins/images/users/genu.jpg" alt="user" class="img-circle" />  {{user.Nombre}} {{user.Apellido}}
+                                                <img src="../plugins/images/users/genu.jpg" alt="user" class="img-circle" />  {{user.data.Nombre}} {{user.data.Apellido}}
                                             </a>
                                         </td>
-                                        <td>{{user.email}}</td>
-                                        <td>{{user.Moneda}}</td>
-                                        <td>{{user.Vida}}</td>
+                                        <td>{{user.data.email}}</td>
+                                        <td>{{user.data.Moneda}}</td>
+                                        <td>{{user.data.Vida}}</td>
                                         <td>    <div>
                                             <p> <span class="pull-right text-muted">60%</span> </p>
                                             <div class="progress progress-striped active">
@@ -98,7 +98,12 @@
                                             </div>
                                         </div>
                                         </td>
-
+                                        <td>
+                                            <div>
+                                                <button class="btn btn-info">-</button>
+                                                <input id="coins" min="0" type="number" style="width: 50px;" />
+                                                <button class="btn btn-warning" ng-click="addCoins(user.uid)">+</button>
+                                            </div>
                                         </td>
                                     </tr>                                   
                                     </tbody>

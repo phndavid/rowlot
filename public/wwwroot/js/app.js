@@ -85,7 +85,7 @@
 /**
  * Definición de enrutamientos
  *
- * @author demorales13@gmail.com
+ * @author Nelson David Padilla H.
  * @since 3-dic-2016
  *
  */
@@ -123,10 +123,7 @@
 
             // Authenticated
             .state("auth", {
-                abstract: true,
-                ncyBreadcrumb: {
-                    skip: true
-                },
+                abstract: true,              
                 // this state url
                 url: "",
                 templateUrl: "views/common/authenticated.html"
@@ -181,7 +178,7 @@
             // Se adiciona la lógica para comprobar que puedo mostrar si no estoy logueado
             var user = CurrentUserService.profile;
 
-            if (!user.loggedIn && toState.name != "login") {
+            if (!user.loggedIn && toState.name != "login" ) {
                 e.preventDefault();
                 LoginRedirectService.redirectPostLogout();
             }
@@ -190,11 +187,7 @@
                 e.preventDefault();
                 LoginRedirectService.redirectPostLogin();
             }
-        })
-
-        // Mostrar por defecto el menú lateral colapsado
-        $cookieStore.put('sideNavCollapsed', false);
-        $rootScope.sideMenuAct = true;       
+        })            
     };
 })();
 /**
@@ -244,9 +237,13 @@
         }
 
         // Cierre de sesión - Se eliminan datos del usuario y se redirecciona a la página de login
-        $scope.logout = function () {
-            LoginService.logout();
-            LoginRedirectService.redirectPostLogout();
+        $scope.logout = function () {            
+            firebase.auth().signOut().then(function() {
+                LoginService.logout();
+                LoginRedirectService.redirectPostLogout();
+            }, function(error) {
+              // An error happened.
+            });
         }
     }
 
@@ -348,6 +345,10 @@
           console.log(error);
         });     
     }
+    $scope.addCoins = function(userId){      
+      console.log("userId",userId);
+      RowlotService.updateCoins(userId);
+    }
     var init = function(){
       loadUsers();
       loadCurrentUser();
@@ -393,34 +394,38 @@
         var getUsers = function () {
             var defered = $q.defer();
             var promise = defered.promise;
-            let users = [];
-            // history, {params: {icao:'+icao+',day:'+day+'}}'
+            let users = [];            
             //acceso al servicio bd
             let database = firebase.database();
             //Mi nodo de Usuarios
             let ref = database.ref('Usuarios');
                 ref.on('value', function (ss) {
                 //let nombre = ss.val();
-                let nombres = ss.val();
-                console.log(nombres);
+                let nombres = ss.val();                
                 //tengo las keys de los usuarios en un array
                 let keys = Object.keys(nombres);      
                 for (let i = 0; i < keys.length; i++){
-                    let k = keys [i];
-                    //$scope.users = $scope.users.concat(nombres[k]);
-                    users.push(nombres[k]);
-                }                 
+                    let k = keys [i];                    
+                    users.push({"data": nombres[k], "uid": k});
+                }
+                console.log(users);
                 defered.resolve(users);
             })
 
             return promise;
         }
-
+        var updateCoins = function(userId){
+            var userRef = firebase.database().ref('/Usuarios/' + userId);
+            userRef.update({
+              Moneda: 1000
+            });
+        }
  
 
         return {
             getUsers: getUsers,
-            getCurrentUser: getCurrentUser
+            getCurrentUser: getCurrentUser,
+            updateCoins:updateCoins
         }
     }
 } ());
@@ -526,8 +531,8 @@
 /**
  * Servicio para el manejo de los redireccionamientos según el estado del token de autenticación del usuario
  * 
- * @author demorales13@gmail.com
- * @since 3-dic-2016
+ * @author Nelson David Padilla
+ * @since 31-Mar-2017
  *
  */
 
