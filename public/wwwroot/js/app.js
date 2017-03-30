@@ -421,39 +421,19 @@
   RowlotController.$inject = ['$scope', '$timeout', 'AircraftService',"CurrentUserService","toastr"];
 
   function RowlotController($scope, $timeout,  AircraftService, CurrentUserService, toastr) {    
-    $scope.profile={
-      email: 'default@rowlot.com',
-      username: 'rowlot',
+    var user = firebase.auth().currentUser;
+      $scope.profile={
+        email: "example.com",
+        username: "rowlot"
+      }
+      if (user != null) {
+      $scope.profile={
+        email: user.email,
+        username: user.Nombre+" "+user.Apellido,
+      }
+      console.log("User", user);
     }
-    var inicialize = function () {
-      console.log(CurrentUserService.profile);
-      //acceso al servicio bd
-      let database = firebase.database();
-      //Mi nodo de Usuarios
-      let ref = database.ref('Usuarios');
-      ref.on('value', function (ss) {
-          //let nombre = ss.val();
-
-          let nombres = ss.val();
-          
-          //tengo las keys de los usuarios en un array
-          let keys = Object.keys(nombres);
-         
-          for (let i = 0; i < keys.length; i++){
-              let k = keys [i];
-              // Saco el nombre
-              let nombre = nombres[k].Nombre;
-              // Saco el apellido
-              let apellido = nombres[k].Apellido;
-              // console.log(nombre, apellido);
-
-              
-
-          }
-
-      });
-    } ();
-
+ 
   }
 } ());
 
