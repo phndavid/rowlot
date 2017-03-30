@@ -1,0 +1,88 @@
+﻿<!--nav id="main_menu" ng-controller="SideMenuController">
+    <div class="menu_wrapper">
+        <ul>
+            <li ng-repeat="section in sections" ng-switch="section.link.length > 0" class="first_level" ng-class="{'has_submenu': section.submenu.length > 0}">
+                <a ng-switch-when="true" ui-sref="{{section.link}}" ng-class="{ act_nav: $state.includes(section.link) }">
+                    <span class="{{section.icon}}"></span>
+                    <span class="menu-title">{{section.title}}</span>
+                    <span class="label label-danger" ng-if="section.badge">{{section.submenu.length}}</span>
+                </a>
+                <a ng-switch-when="false" href="javascript:void(0)">
+                    <span class="{{section.icon}}"></span>
+                    <span class="menu-title">{{section.title}}</span>
+                    <span class="label label-danger" ng-if="section.badge">{{section.submenu.length}}</span>
+                </a>
+                <ul ng-if="section.submenu">
+                    <li ng-if="section.submenu_title" class="submenu-title">{{section.submenu_title}}</li>
+                    <li ng-repeat="item in section.submenu">
+                        <a ui-sref="{{item.link}}" ng-class="{ act_nav: $state.includes(item.link) }">{{item.title}}</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <menu-toggle></menu-toggle>
+</nav-->
+ <!-- .menu vertical  -->
+    <div class="navbar-default sidebar" role="navigation" ng-controller="SideMenuController">
+        <div class="sidebar-nav slimscrollsidebar">
+            <div class="sidebar-head">
+                <a href="index5.html"><span class="fa-fw open-close"><i class="ti-close ti-menu"></i></span> </a> </div>
+      <ul class="nav" id="side-menu">
+                <li class="user-pro">
+                    <a href="#" class="waves-effect">
+                    <img src="../plugins/images/users/varun.jpg" alt="user-img" class="img-circle"> <span class="hide-menu" id="nombreUsuario"> <span  class="fa arrow"></span></span>
+                    </a>
+                    <ul class="nav nav-second-level collapse" aria-expanded="false" style="height: 0px;">
+                        <li><a href="javascript:void(0)"><i class="ti-user"></i> <span class="hide-menu"> Perfil</span></a></li>
+                        <li><a href="javascript:void(0)"><i class="ti-email"></i> <span class="hide-menu">Mensajes</span></a></li>
+                        <li><a href="javascript:void(0)"><i class="ti-settings"></i> <span class="hide-menu">Ajustes de la Cuenta</span></a></li>
+
+                    </ul>
+                </li>
+                <li> 
+                <a ui-sref="auth.rowlot-dashboard" class="waves-effect"><i class="mdi mdi-table fa-fw"></i> <span class="hide-menu">Home</span> </a>
+
+                </li>
+
+                <li> <a ui-sref="auth.rowlot-listtask" class="waves-effect"><i class="mdi mdi-table fa-fw"></i> <span class="hide-menu">Ranking</span></a>
+
+                </li>
+                <!--  <li class="devider"></li>-->
+
+                <li> 
+                    <a href="javascript:void(0)" class="waves-effect">
+                        <i class="mdi mdi-table fa-fw"></i> 
+                        <span class="hide-menu">Tareas<span class="fa arrow"></span>
+                        <span class="label label-rouded label-danger pull-right">9</span></span>
+                    </a>
+                    <ul ng-switch-when="false" class="nav nav-second-level">
+
+                        <li>
+                            <a href="foo-tables.html"><i class="fa-fw">L</i>
+                                <span class="hide-menu">Lista</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="calendar.html">
+                                <i class="fa-fw">C</i>
+                                <span class="hide-menu">Calendario</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+
+                <!--    <li class="devider"></li>-->
+
+
+
+
+                <li><a href="login.html" class="waves-effect"><i class="mdi mdi-logout fa-fw"></i> <span class="hide-menu">Cerra Sesion</span></a></li>
+                <li class="devider"></li>
+                <li><a href="documentation.html" class="waves-effect"><i class="fa fa-circle-o text-danger"></i> <span class="hide-menu">Documentacion</span></a></li>
+                <li><a href="faq.html" class="waves-effect"><i class="fa fa-circle-o text-success"></i> <span class="hide-menu">Ayuda</span></a></li>
+            </ul>
+            
+        </div>
+    </div>

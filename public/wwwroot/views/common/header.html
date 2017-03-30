@@ -1,0 +1,141 @@
+﻿<!--header id="main_header" ng-controller="LoginController">
+    <div class="container-fluid">
+        <div class="brand_section">
+            <a ui-sref="auth.aircraft" href="javascript:;">
+                <img src="content/images/logo.png" alt="site_logo" height="26">
+            </a>
+        </div>
+
+
+        <div class="header_user_actions dropdown">
+            <div data-toggle="dropdown" class="dropdown-toggle user_dropdown">
+                <div class="user_avatar">
+                    <img src="content/images/avatar.png" alt="" width="26" height="26">
+                </div>
+                <span class="caret"></span>
+            </div>
+            <ul class="dropdown-menu dropdown-menu-right">
+                <li>
+                    <a id="logout-user" href="javascript:;" ng-click="logout()">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header-->
+ <!-- horizontal menu  -->
+    <nav class="navbar navbar-default navbar-static-top m-b-0" style="z-index: 123312; position: fixed;">
+        <div class="navbar-header">
+            <div class="top-left-part">
+                <!-- Logo -->
+                <a class="logo" ui-sref="auth.rowlot" href="javascript:;">
+
+                    <!-- Logo--><span class="hidden-xs">
+                        <img src="../plugins/images/logo-menu.png" alt="home" class="dark-logo">
+                     </span> </a>
+            </div>
+            <!-- /Logo -->
+            <!-- Search input and Toggle icon -->
+            <ul class="nav navbar-top-links navbar-left">
+                <li><a href="javascript:void(0)" class="open-close waves-effect waves-light"><i class="ti-menu"></i></a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle waves-effect waves-light" data-toggle="dropdown" href="#"> <i class="mdi mdi-gmail"></i>
+                        <div class="notify">  <span class="point"></span> </div>
+                    </a>
+                    <ul class="dropdown-menu mailbox animated pulse">
+                        <li>
+                            <div class="drop-title">You have 4 new messages</div>
+                        </li>
+                        <li>
+                            <div class="message-center">
+                                <a href="#">
+                                    <div class="user-img"> <img src="../plugins/images/users/pawandeep.jpg" alt="user" class="img-circle"> <span class="profile-status online pull-right"></span> </div>
+                                    <div class="mail-contnet">
+                                        <h5>Pavan kumar</h5> <span class="mail-desc">Just see the my admin!</span> <span class="time">9:30 AM</span> </div>
+                                </a>
+                                <a href="#">
+                                    <div class="user-img"> <img src="../plugins/images/users/sonu.jpg" alt="user" class="img-circle"> <span class="profile-status busy pull-right"></span> </div>
+                                    <div class="mail-contnet">
+                                        <h5>Sonu Nigam</h5> <span class="mail-desc">I've sung a song! See you at</span> <span class="time">9:10 AM</span> </div>
+                                </a>
+
+                            </div>
+                        </li>
+                        <li>
+                            <a class="text-center" href="javascript:void(0);"> <strong>See all notifications</strong> <i class="fa fa-angle-right"></i> </a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-messages -->
+                </li>
+                <!-- .Task dropdown -->
+                <li class="dropdown">
+                    <a class="dropdown-toggle waves-effect waves-light" data-toggle="dropdown" href="#"> <i class="mdi mdi-check-circle"></i>
+                        <div class="notify"><span class="point"></span></div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-tasks animated pulse">
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <p> <strong>Task 1</strong> <span class="pull-right text-muted">40% Complete</span> </p>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%"> <span class="sr-only">40% Complete (success)</span> </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <p> <strong>Task 2</strong> <span class="pull-right text-muted">20% Complete</span> </p>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%"> <span class="sr-only">20% Complete</span> </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+
+
+                        <li class="divider"></li>
+                        <li>
+                            <a class="text-center" href="#"> <strong>See All Tasks</strong> <i class="fa fa-angle-right"></i> </a>
+                        </li>
+                    </ul>
+                </li>
+
+            </ul>
+
+
+            <ul class="nav navbar-top-links navbar-right pull-right">
+                <li>
+                    <form role="search" class="app-search hidden-sm hidden-xs m-r-10">
+                        <input type="text" placeholder="Buscar..." class="form-control"> <a href=""><i class="fa fa-search"></i></a> </form>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#"> <b class="hidden-xs">HCI</b><span class="caret"></span> </a>
+                    <ul class="dropdown-menu dropdown-user animated flipInY">
+                        <li>
+                            <div class="dw-user-box">
+                                <div class="u-img"><img src="../plugins/images/users/varun.jpg" alt="user" /></div>
+                                <div class="u-text"><h4>Profesor: Luis Felipe Vergara</h4><p class="text-muted">lfvergara@gmail.com</p><a href="profile.html" class="btn btn-rounded btn-danger btn-sm">Ver más</a></div>
+                            </div>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#"><i class="ti-user"></i> Informacion del curso</a></li>
+
+
+                        <li role="separator" class="divider"></li>
+
+                        <li><a href="#"><i class="fa fa-power-off"></i> Cerrar Sesión</a></li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+
+                <!-- /.dropdown -->
+            </ul>
+        </div>
+        <!-- /.navbar-header -->
+        <!-- /.navbar-top-links -->
+        <!-- /.navbar-static-side -->
+    </nav>
+
+
