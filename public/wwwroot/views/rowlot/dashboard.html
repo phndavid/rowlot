@@ -1,7 +1,5 @@
 <div id="wrapper">
-   
     <!-- Page Content -->
-
     <div id="page-wrapper">
         <div class="container-fluid">
             <div class="row bg-title">
@@ -100,12 +98,12 @@
                                         </td>
                                         <td>
                                             <div>
-                                                <button class="btn btn-info">-</button>
-                                                <input id="coins" min="0" type="number" style="width: 50px;" />
-                                                <button class="btn btn-warning" ng-click="addCoins(user.uid)">+</button>
+                                                <button class="btn btn-info" ng-click="substratCoins(user.uid, user.data.Moneda)">-</button>
+                                                <input id="{{user.uid}}" min="0" type="number" ng-model='coins' style="width: 50px;" />
+                                                <button class="btn btn-warning" ng-click="addCoins(user.uid, user.data.Moneda)">+</button>
                                             </div>
                                         </td>
-                                    </tr>                                   
+                                    </tr>
                                     </tbody>
                                 </table>
                             </div>

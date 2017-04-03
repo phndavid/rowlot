@@ -20,12 +20,10 @@
         var getCurrentUser = function(){
             var defered = $q.defer();
             var promise = defered.promise;
-            let user = firebase.auth().currentUser;
-            console.log("currentUser",user);
+            let user = firebase.auth().currentUser;            
             if(user != null){            
                 firebase.database().ref('/Usuarios/' + user.uid).once('value').then(function(snapshot) {
-                  //var username = snapshot.val().username;
-                  console.log(snapshot.val());
+                  //var username = snapshot.val().username;                  
                   defered.resolve(snapshot.val());
                   // ...
                 })            
@@ -48,17 +46,16 @@
                 for (let i = 0; i < keys.length; i++){
                     let k = keys [i];                    
                     users.push({"data": nombres[k], "uid": k});
-                }
-                console.log(users);
+                }                
                 defered.resolve(users);
             })
 
             return promise;
         }
-        var updateCoins = function(userId){
+        var updateCoins = function(userId, coins){
             var userRef = firebase.database().ref('/Usuarios/' + userId);
             userRef.update({
-              Moneda: 1000
+              Moneda: coins
             });
         }
  

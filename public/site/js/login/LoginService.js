@@ -1,7 +1,7 @@
 ﻿/**
  * Servicio para el manejo de la lógica de negocio del módulo de autenticación
  * 
- * @author demorales13@gmail.com
+ * @author Nelson David Padilla
  * @since 3-dic-2016
  *
  */
@@ -34,8 +34,7 @@
             
             // Add a realtime listener
             firebase.auth().onAuthStateChanged(function(user) {
-                if(user) {
-                    console.log("Logged in as:",user);
+                if(user) {                    
                     CurrentUserService.setProfile(credentials.username, user.uid);
                     defered.resolve();                     
                 }else{

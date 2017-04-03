@@ -5,13 +5,13 @@
             <a href="index5.html"><span class="fa-fw open-close"><i class="ti-close ti-menu"></i></span> </a> </div>
   <ul class="nav" id="side-menu">
             <li class="user-pro">
-                <a href="#" class="waves-effect">                    
+                <a href="#" class="waves-effect">
                     <img src="../plugins/images/users/varun.jpg" alt="user-img" class="img-circle">
                     {{profile.Nombre}} {{profile.Apellido}}
-                </a>                   
+                </a>
 
             </li>
-            <li> 
+            <li>
             <a ui-sref="auth.rowlot" class="waves-effect"><i class="mdi mdi-table fa-fw"></i> <span class="hide-menu">Home</span> </a>
 
             </li>
@@ -21,13 +21,13 @@
             </li>
             <!--  <li class="devider"></li>-->
 
-            <li> 
+            <li>
                 <a href="javascript:void(0)" class="waves-effect">
-                    <i class="mdi mdi-table fa-fw"></i> 
+                    <i class="mdi mdi-table fa-fw"></i>
                     <span class="hide-menu">Tareas<span class="fa arrow"></span>
                     <span class="label label-rouded label-danger pull-right">9</span></span>
                 </a>
-                <ul ng-switch-when="false" class="nav nav-second-level">
+                <ul class="nav nav-second-level">
 
                     <li>
                         <a href="foo-tables.html"><i class="fa-fw">L</i>
@@ -35,7 +35,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="calendar.html">
+                        <a ui.sref="auth.calendar">
                             <i class="fa-fw">C</i>
                             <span class="hide-menu">Calendario</span>
                         </a>
@@ -48,6 +48,6 @@
             <li><a href="documentation.html" class="waves-effect"><i class="fa fa-circle-o text-danger"></i> <span class="hide-menu">Documentacion</span></a></li>
             <li><a href="faq.html" class="waves-effect"><i class="fa fa-circle-o text-success"></i> <span class="hide-menu">Ayuda</span></a></li>
         </ul>
-        
+
     </div>
 </div>

@@ -33,13 +33,13 @@
             .state("signup", {
                 page_title: "Rowlot - Registro",
                 url: "/signup",
-                templateUrl: "views/register.html",
+                templateUrl: "views/signup.html",
                 controller: "LoginController"
             })
 
             // Authenticated
             .state("auth", {
-                abstract: true,              
+                abstract: true,
                 // this state url
                 url: "",
                 templateUrl: "views/common/authenticated.html"
@@ -48,15 +48,21 @@
             .state("auth.rowlot", {
                 page_title: "Rowlot - Dashboard",
                 url: "/dashboard",
-                templateUrl: "views/rowlot/dashboard.html",                                     
+                templateUrl: "views/rowlot/dashboard.html",
+                controller: "RowlotController"
+            })
+            .state("auth.calendar", {
+                page_title: "Rowlot - Calendario",
+                url: "/calendar",
+                templateUrl: "views/rowlot/calendar.html",
                 controller: "RowlotController"
             })
             .state("auth.rowlot-listtask", {
                 page_title: "Rowlot - Dashboard",
                 url: "/task",
-                templateUrl: "views/rowlot/listtask.html",                                     
+                templateUrl: "views/rowlot/listtask.html",
                 controller: "LiveTrafficController"
             })
-      
+
     };
 } ());

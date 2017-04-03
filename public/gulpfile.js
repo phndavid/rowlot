@@ -70,7 +70,7 @@ gulp.task('minifyCss', function () {
     //var cssFilter = filter(['**/*.css']);
     var cssFilter = filter(['**/*.css', '**/*.ttf', '**/*.woff']);
 
-    var t01 = gulp.src(paths.content.orig + '/**/*.css')
+    var t01 = gulp.src(paths.content.orig + '/**/css/*.css')
                   .pipe(mincss())
                   .pipe(gulp.dest(paths.content.dest));
 
