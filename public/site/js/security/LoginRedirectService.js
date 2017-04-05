@@ -40,7 +40,11 @@
             $injector.get("$state").go("login"); 
             lastPath = main;
         }
-
+        // Redirecciona a la página de login
+        var redirectPostSignup = function () {
+            $injector.get("$state").go("signup"); 
+            lastPath = main;
+        }
         // Determina si se está en la página de logueo
         var isLoginPath = function () {
             if ($injector.get("$state").is("login"))

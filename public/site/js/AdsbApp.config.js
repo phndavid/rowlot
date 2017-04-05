@@ -10,8 +10,7 @@
     "use strict";
 
     angular.module("AdsbApp")
-           .config(configInterceptors)
-           .config(configBreadCrumb)
+           .config(configInterceptors)         
            .config(configLoader);
 
     configInterceptors.$inject = ["$httpProvider"];
@@ -22,28 +21,7 @@
         $httpProvider.interceptors.push("AddTokenService");
         $httpProvider.interceptors.push("LoginRedirectService");
     }
-
-    configBreadCrumb.$inject = ["$breadcrumbProvider"];
-
-    // Breadcrumbs options
-    function configBreadCrumb($breadcrumbProvider) {
-        $breadcrumbProvider.setOptions({
-            includeAbstract: true,
-            //prefixStateName: "auth.aircraft-trackinghistory",
-            templateUrl: "views/common/breadcrumbs.html"
-        });
-    }
-
-    configGoogleMap.$inject = ['uiGmapGoogleMapApiProvider'];
-
-    // Google map options
-    function configGoogleMap(uiGmapGoogleMapApiProvider) {
-        uiGmapGoogleMapApiProvider.configure({
-            key: 'AIzaSyDrjU-VTXQ2LGGBERUI15vV_iwDN6Lp5n8',
-            v: '3',
-            libraries: 'weather,geometry,visualization'
-        });
-    }
+  
 
     configLoader.$inject = ['cfpLoadingBarProvider'];
 

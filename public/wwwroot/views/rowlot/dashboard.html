@@ -10,7 +10,7 @@
             </div>
 
             <!-- .row -->
-            <div class="row">
+            <div ng-show="showStudent" class="row">
                 <div class="col-lg-3 col-sm-6 col-xs-12">
                     <div class="white-box analytics-info">
                         <h3 class="box-title">Rank</h3>
@@ -96,7 +96,7 @@
                                             </div>
                                         </div>
                                         </td>
-                                        <td>
+                                        <td ng-show="showTeacher">
                                             <div>
                                                 <button class="btn btn-info" ng-click="substratCoins(user.uid, user.data.Moneda)">-</button>
                                                 <input id="{{user.uid}}" min="0" type="number" ng-model='coins' style="width: 50px;" />

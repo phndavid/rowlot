@@ -31,9 +31,9 @@
             // Se adiciona la lógica para comprobar que puedo mostrar si no estoy logueado
             var user = CurrentUserService.profile;
 
-            if (!user.loggedIn && toState.name != "login" ) {
+            if (!user.loggedIn && toState.name != "login" && toState.name != "signup") {                            
                 e.preventDefault();
-                LoginRedirectService.redirectPostLogout();
+                LoginRedirectService.redirectPostLogout();                
             }
 
             if (user.loggedIn && toState.name == "login") {

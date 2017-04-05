@@ -30,6 +30,7 @@
             }
             return promise;
         }
+        
         var getUsers = function () {
             var defered = $q.defer();
             var promise = defered.promise;
@@ -52,6 +53,7 @@
 
             return promise;
         }
+
         var updateCoins = function(userId, coins){
             var userRef = firebase.database().ref('/Usuarios/' + userId);
             userRef.update({
@@ -59,7 +61,6 @@
             });
         }
  
-
         return {
             getUsers: getUsers,
             getCurrentUser: getCurrentUser,

@@ -21,11 +21,18 @@
       return RowlotService.getCurrentUser().then(function(response){
         console.log("user",response)
         $scope.profile = response;
+        console.log("TIPO", $scope.profile.Tipo);
+        var typeStudent = showStudent($scope.profile.Tipo);
+        $scope.showStudent = typeStudent;
+        var typeTeacher = showTeacher($scope.profile.Tipo);
+        $scope.showTeacher = typeTeacher;
+        console.log("SHOW", type);
       }, function (error) {
           toastr.error("Error al cargar usuario");
           console.log(error);
         });
     }
+
     var loadUsers = function(){
       return RowlotService.getUsers().then(function (response) {          
           console.log("Users", response);
@@ -35,6 +42,7 @@
           console.log(error);
         });     
     }
+
     $scope.addCoins = function(userId, coins){                
       var val = angular.element('#'+userId).val();      
       var newCoins = parseInt(coins)+parseInt(val);
@@ -44,6 +52,7 @@
       loadUsers();
       loadCurrentUser();
     }
+
     $scope.substratCoins = function(userId, coins){            
       var val = angular.element('#'+userId).val();      
       var newCoins = parseInt(coins)-parseInt(val);
@@ -52,6 +61,12 @@
       $scope.users = [];
       loadUsers();
       loadCurrentUser();
+    }
+    var showStudent = function(type){         
+        return type=="Estudiante";
+    }
+    var showTeacher = function(type){         
+        return type=="Profesor";
     }
     var init = function(){
       loadUsers();

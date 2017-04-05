@@ -39,8 +39,7 @@
     "use strict";
 
     angular.module("AdsbApp")
-           .config(configInterceptors)
-           .config(configBreadCrumb)
+           .config(configInterceptors)         
            .config(configLoader);
 
     configInterceptors.$inject = ["$httpProvider"];
@@ -51,28 +50,7 @@
         $httpProvider.interceptors.push("AddTokenService");
         $httpProvider.interceptors.push("LoginRedirectService");
     }
-
-    configBreadCrumb.$inject = ["$breadcrumbProvider"];
-
-    // Breadcrumbs options
-    function configBreadCrumb($breadcrumbProvider) {
-        $breadcrumbProvider.setOptions({
-            includeAbstract: true,
-            //prefixStateName: "auth.aircraft-trackinghistory",
-            templateUrl: "views/common/breadcrumbs.html"
-        });
-    }
-
-    configGoogleMap.$inject = ['uiGmapGoogleMapApiProvider'];
-
-    // Google map options
-    function configGoogleMap(uiGmapGoogleMapApiProvider) {
-        uiGmapGoogleMapApiProvider.configure({
-            key: 'AIzaSyDrjU-VTXQ2LGGBERUI15vV_iwDN6Lp5n8',
-            v: '3',
-            libraries: 'weather,geometry,visualization'
-        });
-    }
+  
 
     configLoader.$inject = ['cfpLoadingBarProvider'];
 
@@ -184,9 +162,9 @@
             // Se adiciona la lógica para comprobar que puedo mostrar si no estoy logueado
             var user = CurrentUserService.profile;
 
-            if (!user.loggedIn && toState.name != "login" ) {
+            if (!user.loggedIn && toState.name != "login" && toState.name != "signup") {                            
                 e.preventDefault();
-                LoginRedirectService.redirectPostLogout();
+                LoginRedirectService.redirectPostLogout();                
             }
 
             if (user.loggedIn && toState.name == "login") {
@@ -221,7 +199,7 @@
 
         // Instancia del usuario actual
         $scope.user = CurrentUserService.profile;
-
+        
         // Inicio de sesión
         $scope.login = function (form) {
             if (form.$valid) {
@@ -241,7 +219,19 @@
                 form.$setUntouched();
             }
         }
-
+        //Registro
+        $scope.signup = function(form){
+          if (form.$valid){
+            LoginService.signup($scope.credentials).then(function(response){
+                 LoginRedirectService.redirectPostLogin();
+            }, function(error){
+                toastr.error("No se pudo ejecutar la operación");
+                console.log(error);
+            });
+            $scope.credentials.password = "";
+            form.$setUntouched();
+          }
+        }
         // Cierre de sesión - Se eliminan datos del usuario y se redirecciona a la página de login
         $scope.logout = function () {            
             firebase.auth().signOut().then(function() {
@@ -251,6 +241,7 @@
               // An error happened.
             });
         }
+      
         var init = function(){  
             // Row Toggler
             // -----------------------------------------------------------------
@@ -371,7 +362,7 @@
             firebase.auth().onAuthStateChanged(function(user) {
                 if(user) {                    
                     CurrentUserService.setProfile(credentials.username, user.uid);
-                    defered.resolve();                     
+                    defered.resolve();
                 }else{
                     console.error("Authentication failed:", error);
                     defered.reject("Usuario no existe...")    
@@ -379,7 +370,41 @@
             });
             return promise;
         }
+        var signup = function(credentials){
+            var defered = $q.defer();
+            var promise = defered.promise;
+            
+            const auth = firebase.auth();
 
+             auth.createUserWithEmailAndPassword(credentials.email,credentials.password).then(function(user){
+                    if(user){
+                      console.log('uid',user.uid);                  
+                      writeUserData(user.uid,credentials.email, credentials.password,'imagencita', credentials.name, credentials.lastName);                      
+                      defered.resolve();
+                    }else{
+                        console.error("Authentication failed:", error);
+                        defered.reject("Usuario no existe...") 
+                    }
+              });
+             return promise;
+        }
+        //Funcion donde agrego los datos del usuario creado
+        //a la base de datos, con el UID <3
+        var writeUserData = function (userId, email, pass, imageUrl, nombre, apellido) {
+            console.log('basededatos');
+            firebase.database().ref('Usuarios/' + userId).set({
+                Nombre: nombre,
+                Apellido: apellido,
+                email: email,
+                Contrasena: pass,
+                profile_picture : imageUrl,
+                experiencia: 0,
+                Moneda: 300,
+                Tipo: 'Estudiante',
+                Vida: 5
+
+            });
+        }
         // Servicio de fin de sesión
         var logout = function () {
             // Elimina el perfil almacenado
@@ -388,7 +413,8 @@
 
         return {
             login: login,
-            logout: logout
+            logout: logout,
+            signup: signup
         };
     };
 
@@ -416,11 +442,18 @@
       return RowlotService.getCurrentUser().then(function(response){
         console.log("user",response)
         $scope.profile = response;
+        console.log("TIPO", $scope.profile.Tipo);
+        var typeStudent = showStudent($scope.profile.Tipo);
+        $scope.showStudent = typeStudent;
+        var typeTeacher = showTeacher($scope.profile.Tipo);
+        $scope.showTeacher = typeTeacher;
+        console.log("SHOW", type);
       }, function (error) {
           toastr.error("Error al cargar usuario");
           console.log(error);
         });
     }
+
     var loadUsers = function(){
       return RowlotService.getUsers().then(function (response) {          
           console.log("Users", response);
@@ -430,6 +463,7 @@
           console.log(error);
         });     
     }
+
     $scope.addCoins = function(userId, coins){                
       var val = angular.element('#'+userId).val();      
       var newCoins = parseInt(coins)+parseInt(val);
@@ -439,6 +473,7 @@
       loadUsers();
       loadCurrentUser();
     }
+
     $scope.substratCoins = function(userId, coins){            
       var val = angular.element('#'+userId).val();      
       var newCoins = parseInt(coins)-parseInt(val);
@@ -447,6 +482,12 @@
       $scope.users = [];
       loadUsers();
       loadCurrentUser();
+    }
+    var showStudent = function(type){         
+        return type=="Estudiante";
+    }
+    var showTeacher = function(type){         
+        return type=="Profesor";
     }
     var init = function(){
       loadUsers();
@@ -488,6 +529,7 @@
             }
             return promise;
         }
+        
         var getUsers = function () {
             var defered = $q.defer();
             var promise = defered.promise;
@@ -510,6 +552,7 @@
 
             return promise;
         }
+
         var updateCoins = function(userId, coins){
             var userRef = firebase.database().ref('/Usuarios/' + userId);
             userRef.update({
@@ -517,7 +560,6 @@
             });
         }
  
-
         return {
             getUsers: getUsers,
             getCurrentUser: getCurrentUser,
@@ -666,7 +708,11 @@
             $injector.get("$state").go("login"); 
             lastPath = main;
         }
-
+        // Redirecciona a la página de login
+        var redirectPostSignup = function () {
+            $injector.get("$state").go("signup"); 
+            lastPath = main;
+        }
         // Determina si se está en la página de logueo
         var isLoginPath = function () {
             if ($injector.get("$state").is("login"))

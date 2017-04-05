@@ -23,7 +23,7 @@
 
         // Instancia del usuario actual
         $scope.user = CurrentUserService.profile;
-
+        
         // Inicio de sesión
         $scope.login = function (form) {
             if (form.$valid) {
@@ -43,7 +43,19 @@
                 form.$setUntouched();
             }
         }
-
+        //Registro
+        $scope.signup = function(form){
+          if (form.$valid){
+            LoginService.signup($scope.credentials).then(function(response){
+                 LoginRedirectService.redirectPostLogin();
+            }, function(error){
+                toastr.error("No se pudo ejecutar la operación");
+                console.log(error);
+            });
+            $scope.credentials.password = "";
+            form.$setUntouched();
+          }
+        }
         // Cierre de sesión - Se eliminan datos del usuario y se redirecciona a la página de login
         $scope.logout = function () {            
             firebase.auth().signOut().then(function() {
@@ -53,6 +65,7 @@
               // An error happened.
             });
         }
+      
         var init = function(){  
             // Row Toggler
             // -----------------------------------------------------------------
