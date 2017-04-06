@@ -193,8 +193,8 @@
     function LoginController($scope, $rootScope,  LoginService, CurrentUserService, LoginRedirectService, toastr) {
 
         $scope.credentials = {
-            username: "dev@gmail.com",
-            password: "password"
+            username: "",
+            password: ""
         }
 
         // Instancia del usuario actual
@@ -222,6 +222,7 @@
         //Registro
         $scope.signup = function(form){
           if (form.$valid){
+            console.log($scope.credentials);
             LoginService.signup($scope.credentials).then(function(response){
                  LoginRedirectService.redirectPostLogin();
             }, function(error){
@@ -379,7 +380,7 @@
              auth.createUserWithEmailAndPassword(credentials.email,credentials.password).then(function(user){
                     if(user){
                       console.log('uid',user.uid);                  
-                      writeUserData(user.uid,credentials.email, credentials.password,'imagencita', credentials.name, credentials.lastName);                      
+                      writeUserData(user.uid,credentials.email, credentials.password,'imagencita', credentials.name, credentials.lastName, credentials.type);                      
                       defered.resolve();
                     }else{
                         console.error("Authentication failed:", error);
@@ -390,7 +391,7 @@
         }
         //Funcion donde agrego los datos del usuario creado
         //a la base de datos, con el UID <3
-        var writeUserData = function (userId, email, pass, imageUrl, nombre, apellido) {
+        var writeUserData = function (userId, email, pass, imageUrl, nombre, apellido, type) {
             console.log('basededatos');
             firebase.database().ref('Usuarios/' + userId).set({
                 Nombre: nombre,
@@ -400,7 +401,7 @@
                 profile_picture : imageUrl,
                 experiencia: 0,
                 Moneda: 300,
-                Tipo: 'Estudiante',
+                Tipo: type,
                 Vida: 5
 
             });
@@ -437,7 +438,7 @@
 
   function RowlotController($scope, $timeout,  RowlotService, CurrentUserService, toastr) {    
     $scope.users = [];
-    $scope.profile = [];
+    $scope.profile = [];    
     var loadCurrentUser = function(){
       return RowlotService.getCurrentUser().then(function(response){
         console.log("user",response)
@@ -483,12 +484,15 @@
       loadUsers();
       loadCurrentUser();
     }
+
     var showStudent = function(type){         
         return type=="Estudiante";
     }
+
     var showTeacher = function(type){         
         return type=="Profesor";
     }
+
     var init = function(){
       loadUsers();
       loadCurrentUser();

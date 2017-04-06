@@ -17,8 +17,8 @@
     function LoginController($scope, $rootScope,  LoginService, CurrentUserService, LoginRedirectService, toastr) {
 
         $scope.credentials = {
-            username: "dev@gmail.com",
-            password: "password"
+            username: "",
+            password: ""
         }
 
         // Instancia del usuario actual
@@ -46,6 +46,7 @@
         //Registro
         $scope.signup = function(form){
           if (form.$valid){
+            console.log($scope.credentials);
             LoginService.signup($scope.credentials).then(function(response){
                  LoginRedirectService.redirectPostLogin();
             }, function(error){

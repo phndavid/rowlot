@@ -28,12 +28,22 @@
         </div>
         <div class="form-group">
           <div class="col-md-12">
+            <div class="checkbox-primary p-t-0">              
+              <label for="checkbox-signup">Tipo de usuario</label>
+              <br>
+              <input type="radio" id="radio1" ng-model="credentials.type" name="vehicle" value="Estudiante">Estudiante
+              <input type="radio" id="radio2" ng-model="credentials.type" name="vehicle" value="Profesor">Profesor
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-md-12">
             <div class="checkbox checkbox-primary p-t-0">
               <input id="checkbox-signup" type="checkbox">
               <label for="checkbox-signup"> I agree to all <a href="#">Terms</a></label>
             </div>
           </div>
-        </div>
+        </div>        
         <div class="form-group text-center m-t-20">
           <div class="col-xs-12">
             <input type="submit" class="btn btn-info btn-lg btn-block text-uppercase waves-effect waves-light" value="Sign in" />  

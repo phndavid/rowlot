@@ -16,7 +16,7 @@
 
   function RowlotController($scope, $timeout,  RowlotService, CurrentUserService, toastr) {    
     $scope.users = [];
-    $scope.profile = [];
+    $scope.profile = [];    
     var loadCurrentUser = function(){
       return RowlotService.getCurrentUser().then(function(response){
         console.log("user",response)
@@ -62,12 +62,15 @@
       loadUsers();
       loadCurrentUser();
     }
+
     var showStudent = function(type){         
         return type=="Estudiante";
     }
+
     var showTeacher = function(type){         
         return type=="Profesor";
     }
+
     var init = function(){
       loadUsers();
       loadCurrentUser();
