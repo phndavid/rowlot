@@ -74,6 +74,7 @@
                 profile_picture : imageUrl,
                 experiencia: 0,
                 Moneda: 300,
+                Medalla: 0,
                 Tipo: type,
                 Vida: 5
 

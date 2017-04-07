@@ -74,6 +74,7 @@
                                         <th>Vidas</th>
                                         <th>Medallas</th>
                                         <th></th>
+                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody ng-init="database()">
@@ -99,6 +100,13 @@
                                                 <button class="btn btn-info" ng-click="substratCoins(user.uid, user.data.Moneda)">-</button>
                                                 <input id="{{user.uid}}" min="0" type="number" ng-model='coins' style="width: 50px;" />
                                                 <button class="btn btn-warning" ng-click="addCoins(user.uid, user.data.Moneda)">+</button>
+                                            </div>
+                                        </td>
+                                        <td ng-show="showTeacher">
+                                            <div>
+                                                <button class="btn btn-info" ng-click="substratMedalla(user.uid, user.data.Medalla)">-</button>
+                                                <input id="metal-{{user.uid}}" min="0" type="number" ng-model='metal' style="width: 50px;" />
+                                                <button class="btn btn-warning" ng-click="addMedalla(user.uid, user.data.Medalla)">+</button>
                                             </div>
                                         </td>
                                     </tr>

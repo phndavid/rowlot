@@ -60,11 +60,20 @@
               Moneda: coins
             });
         }
- 
+        
+
+        var updateMedalla = function(userId, metal){
+            var userRef = firebase.database().ref('/Usuarios/' + userId);
+            userRef.update({
+              Medalla: metal
+            });
+        } 
+        
         return {
             getUsers: getUsers,
             getCurrentUser: getCurrentUser,
-            updateCoins:updateCoins
+            updateCoins:updateCoins,
+            updateMedalla: updateMedalla
         }
     }
 } ());

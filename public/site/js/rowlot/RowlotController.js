@@ -26,7 +26,7 @@
         $scope.showStudent = typeStudent;
         var typeTeacher = showTeacher($scope.profile.Tipo);
         $scope.showTeacher = typeTeacher;
-        console.log("SHOW", type);
+        //console.log("SHOW", type);
       }, function (error) {
           toastr.error("Error al cargar usuario");
           console.log(error);
@@ -63,6 +63,25 @@
       loadCurrentUser();
     }
 
+    $scope.addMedalla = function(userId, metal){        
+      var val = angular.element('#metal-'+userId).val();      
+      var newMedalla = parseInt(metal)+parseInt(val);      
+      RowlotService.updateMedalla(userId, newMedalla);
+      angular.element('#'+userId).val();
+      $scope.users = [];
+      loadUsers();
+      loadCurrentUser();
+    }
+
+    $scope.substratMedalla = function(userId, coins){            
+      var val = angular.element('#metal-'+userId).val();      
+      var newMedalla = parseInt(coins)-parseInt(val);
+      RowlotService.updateMedalla(userId, newMedalla);
+      angular.element('#'+userId).val();
+      $scope.users = [];
+      loadUsers();
+      loadCurrentUser();
+    }
     var showStudent = function(type){         
         return type=="Estudiante";
     }
